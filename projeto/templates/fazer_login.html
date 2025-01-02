@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Bem-vindo à nossa plataforma!</h1>
+        <p class="text-muted">Acesse sua conta ou cadastre-se para aproveitar nossos serviços exclusivos.</p>
+    </div>
+
+    <div class="row justify-content-center align-items-center">
+
+        <div class="col-lg-4 col-md-6">
+            <form method="POST" action="{{ url_for('login') }}" class="border p-4 rounded shadow-sm bg-light form-equal-height">
+                <h2 class="text-center mb-4">Fazer Login</h2>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            </form>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mt-4 mt-md-0">
+            <form method="POST" action="{{ url_for('cadastrar_usuario') }}" class="border p-4 rounded shadow-sm bg-light form-equal-height">
+                <h2 class="text-center mb-4">Criar Conta</h2>
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha">
+                </div>
+                <div class="mb-3">
+                    <label for="papel" class="form-label">Papel</label>
+                    <select class="form-control" id="papel" name="papel">
+                        <option value="cliente">Cliente</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-equal-height {
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+</style>
+
+{% endblock %}

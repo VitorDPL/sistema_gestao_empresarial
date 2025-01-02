@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app, resources={r"/*": {"origins": "*"}}, methods=["GET", "POST", "DELETE"])
+app.config['SECRET_KEY'] = 'teste'
 
 db = SQLAlchemy(app)
 
