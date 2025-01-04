@@ -4,49 +4,92 @@
 
 {% block content %}
 
-<div class="container mt-5">
-    <div class="text-center mb-4">
-        <h1 class="display-4">Cadastrar Cliente</h1>
-        <p class="text-muted">Preencha os campos abaixo para cadastrar um novo cliente.</p>
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-primary">Cadastrar Cliente</h1>
+        <p class="text-muted fs-5">Preencha os campos abaixo para adicionar um novo cliente à sua base de dados.</p>
     </div>
     
-    <form class="row g-3" method="POST" action="{{ url_for('cadastrar_cliente') }}">
-        <div class="col-md-6">
-          <label for="inputNome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="inputNome" name="nome" required>
-        </div>
-        <div class="col-md-6">
-          <label for="inputEmail" class="form-label">Email</label>
-          <input type="email" class="form-control" id="inputEmail" name="email" required>
-        </div>
-        <div class="col-md-6">
-          <label for="inputTelefone" class="form-label">Telefone</label>
-          <input type="text" class="form-control" id="inputTelefone" name="telefone" required>
-        </div>
-        <div class="col-md-2">
-          <label for="inputCep" class="form-label">CEP</label>
-          <input type="text" class="form-control" id="inputCep" name="cep" required>
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-          <button type="button" class="btn btn-primary" onclick="buscarEndereco()">Buscar Endereço</button>
-        </div>
-        <div class="col-12">
-          <label for="inputEndereco" class="form-label">Endereço</label>
-          <input type="text" class="form-control" id="inputEndereco" name="endereco" required>
-        </div>
-        <div class="col-md-6">
-          <label for="inputCidade" class="form-label">Cidade</label>
-          <input type="text" class="form-control" id="inputCidade" name="cidade" required>
-        </div>
-        <div class="col-md-4">
-          <label for="inputEstado" class="form-label">Estado</label>
-          <input type="text" class="form-control" id="inputEstado" name="estado" required>
-        </div>
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">Cadastrar</button>
-        </div>
-      </form>
+    <div class="card shadow-sm border-0 p-4">
+        <form class="row g-4" method="POST" action="{{ url_for('cadastrar_cliente') }}">
+            <!-- Nome e Email -->
+            <div class="col-md-6">
+                <label for="inputNome" class="form-label fw-semibold">Nome</label>
+                <input type="text" class="form-control" id="inputNome" name="nome" placeholder="Ex: João Silva" required>
+            </div>
+            <div class="col-md-6">
+                <label for="inputEmail" class="form-label fw-semibold">Email</label>
+                <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Ex: joao@email.com" required>
+            </div>
+            
+            <!-- Telefone e CEP -->
+            <div class="col-md-6">
+                <label for="inputTelefone" class="form-label fw-semibold">Telefone</label>
+                <input type="text" class="form-control" id="inputTelefone" name="telefone" placeholder="Ex: (31) 98765-4321" required>
+            </div>
+            <div class="col-md-2">
+                <label for="inputCep" class="form-label fw-semibold">CEP</label>
+                <input type="text" class="form-control" id="inputCep" name="cep" placeholder="Ex: 36000-000" required>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-primary w-100" onclick="buscarEndereco()">Buscar</button>
+            </div>
+            
+            <!-- Endereço -->
+            <div class="col-12">
+                <label for="inputEndereco" class="form-label fw-semibold">Endereço</label>
+                <input type="text" class="form-control" id="inputEndereco" name="endereco" placeholder="Ex: Rua dos Lírios, 123" required>
+            </div>
+            
+            <!-- Cidade e Estado -->
+            <div class="col-md-6">
+                <label for="inputCidade" class="form-label fw-semibold">Cidade</label>
+                <input type="text" class="form-control" id="inputCidade" name="cidade" placeholder="Ex: Juiz de Fora" required>
+            </div>
+            <div class="col-md-4">
+                <label for="inputEstado" class="form-label fw-semibold">Estado</label>
+                <input type="text" class="form-control" id="inputEstado" name="estado" placeholder="Ex: MG" required>
+            </div>
+            
+            <!-- Botão de Envio -->
+            <div class="col-12 text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg px-5">Cadastrar Cliente</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+{% include 'componentes/footer.html' %}
+
+<style>
+    body {
+        background-color: #f9fafb;
+    }
+    .container {
+        max-width: 900px;
+    }
+    .card {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+        border-radius: 20px;
+    }
+    label {
+        color: #495057;
+    }
+    input::placeholder {
+        color: #adb5bd;
+        font-style: italic;
+    }
+    .form-control {
+        border-radius: 10px;
+    }
+    .text-primary {
+        color: #007bff !important;
+    }
+</style>
 
 <script>
 function buscarEndereco() {

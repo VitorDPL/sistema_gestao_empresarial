@@ -1,0 +1,38 @@
+<!-- Modal Novo Pedido -->
+<div class="modal fade" id="novoPedido" tabindex="-1" aria-labelledby="novoPedidoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="novoPedidoLabel">Novo Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Conteúdo do modal -->
+                <p>Formulário para criar um novo pedido.</p>
+
+                <!-- buscar produto com botão de adiciona-lo a uma lista. -->
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Buscar Produto" aria-label="Buscar Produto" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
+
+                    <!-- Lista de produtos adicionados ao pedido -->
+                    <ul class="list-group
+                    mt-3">
+                        <li class="list-group
+                        item">Produto 1</li>
+                        <li class="list-group
+                        item">Produto 2</li>
+                        <li class="list-group
+                        item">Produto 3</li>
+                    </ul>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary">Salvar Pedido</button>
+            </div>
+        </div>
+    </div>
+</div>

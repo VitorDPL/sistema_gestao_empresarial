@@ -3,29 +3,149 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<div class="container py-5">
+    <!-- Título principal -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-primary">Bem-vindo ao Sistema de Gestão Empresarial!</h1>
+        <p class="text-muted">Gerencie produtos, vendas, relatórios e muito mais de forma intuitiva.</p>
+    </div>
 
-    <center>
-        <h1>Bem-vindo ao Sistema de Gestão Empresarial!</h1>
-    </center>
+    <!-- Busca de Produtos -->
+    <div class="bg-light p-4 rounded shadow-sm mb-5">
+        <h2 class="text-secondary">🔍 Buscar Produto</h2>
+        <form method="POST" action="{{ url_for('buscar_produto') }}">
+            <div class="mb-3">
+                <label for="inputNomeProduto" class="form-label fw-semibold">Nome do Produto</label>
+                <input type="text" class="form-control" id="inputNomeProduto" name="nome" placeholder="Digite o nome do produto">
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
 
-    <form method="POST" action="{{ url_for('buscar_produto') }}">
-        <div class="mb-3">
-          <label for="inputNomeProduto" class="form-label">Buscar Produto</label>
-          <input type="text" class="form-control" id="inputNomeProduto" name="nome" aria-describedby="nomeHelp">
+        {% if produtos %}
+            {% for produto in produtos %}
+            <div class="mt-4 p-4 bg-white rounded shadow-sm border border-success">
+                <h3 class="text-success mb-3 text-center">🎯 Produto Encontrado</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Campo</th>
+                            <th scope="col">Detalhe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ID</strong></td>
+                            <td>{{ produto.id }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nome</strong></td>
+                            <td>{{ produto.nome }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Preço</strong></td>
+                            <td>R$ {{ produto.preco }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quantidade</strong></td>
+                            <td>{{ produto.quantidade }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Categoria</strong></td>
+                            <td>{{ produto.categoria_id }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        {% else %}
+        <p class="text-danger mt-4 text-center">❌ Nenhum produto encontrado. Tente novamente!</p>
+        {% endif %}
+    </div>
+
+    <!-- Cards coloridos -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">📦 Criar Novo Pedido</h5>
+                    <p class="text-muted">Gerencie os pedidos com facilidade.</p>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#novoPedido">Novo Pedido</button>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-    </form>
-    
-    {% if produto %}
-        <div class="mt-4">
-            <h2>Produto Encontrado:</h2>
-            <p><strong>Nome:</strong> {{ produto.nome }}</p>
-            <p><strong>Preço:</strong> {{ produto.preco }}</p>
-            <p><strong>Quantidade:</strong> {{ produto.quantidade }}</p>
-            <p><strong>Categoria ID:</strong> {{ produto.categoria_id }}</p>
+        <div class="col-md-3">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">🛒 Vendas</h5>
+                    <p class="text-muted">Visualize todas as vendas realizadas.</p>
+                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#vendas">Mostrar Vendas</button>
+                </div>
+            </div>
         </div>
-    {% else %}
-        <p class="mt-4">Nenhum produto encontrado.</p>
-    {% endif %}
+        <div class="col-md-3">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">📊 Relatórios</h5>
+                    <p class="text-muted">Gere relatórios detalhados.</p>
+                    <button type="button" class="btn btn-outline-success">Gerar Relatório</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-danger">👥 Funcionários</h5>
+                    <p class="text-muted">Gerencie sua equipe com eficiência.</p>
+                    <button type="button" class="btn btn-outline-danger">Gerenciar Funcionários</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais -->
+    {% include('componentes/modais/modalNovoPedido.html') %}
+    {% include('componentes/modais/modalVendas.html') %}
+</div>
+
+<style>
+    body {
+        background-color: #f9fafb;
+    }
+    .card {
+        border-radius: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .btn {
+        border-radius: 20px;
+    }
+    .container {
+        max-width: 1200px;
+    }
+    .text-primary {
+        color: #007bff !important;
+    }
+    .text-warning {
+        color: #ffc107 !important;
+    }
+    .text-success {
+        color: #28a745 !important;
+    }
+    .text-danger {
+        color: #dc3545 !important;
+    }
+    .text-secondary {
+        color: #6c757d !important;
+    }
+    .fw-bold {
+        font-weight: 700 !important;
+    }
+    .fw-semibold {
+        font-weight: 600 !important;
+    }
+</style>
 
 {% endblock %}

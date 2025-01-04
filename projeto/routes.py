@@ -13,10 +13,12 @@ def admin_required(f):
     return decorated_function
 
 @app.route('/')
+@login_required
+@admin_required
 def home():
     return render_template('index.html')
 
-# login/ criação de usuário
+# usuário
 @app.route('/fazer_login')
 def fazer_login():
     return render_template('usuarios/fazer_login.html')
@@ -41,6 +43,7 @@ def logout():
     return redirect(url_for('home'))
 
 @app.route('/cadastrar_usuario', methods=['POST'])
+@login_required
 def cadastrar_usuario():
     nome = request.form['nome']
     email = request.form['email']
@@ -56,32 +59,53 @@ def cadastrar_usuario():
     flash(f'Usuário criado com sucesso, {new_user.nome}', 'success')
     return redirect(url_for('home'))
 
-# alterações
-@app.route('/alterar_usuario', methods=['GET'])
-@login_required
-@admin_required
-def alterar_usuario():
-    usuarios = Usuario.query.all()
-    return render_template('usuarios/alterar_usuario.html', usuarios=usuarios)
+@app.route('/buscar_usuario', methods=['GET', 'POST'])
+def buscar_usuario():
+    nome = request.form.get('nome')
+    user = Usuario.query.filter_by(nome = nome ).first()
+    return render_template('usuarios/alterar_cliente.html', user=user)
 
-@app.route('/alterar_usuario/<int:id>', methods=['GET'])
+# alterações
+@app.route('/alterar_cliente', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def alterar_usuario_id(id):
-    usuario = Usuario.query.get(id)
-    return render_template('usuarios/alterar_usuario_id.html', usuario=usuario)
+def alterar_cliente():
+    usuarios = Cliente.query.all()
+
+    nome = request.form.get('nome')
+    telefone = request.form.get('telefone')
+    
+    if nome:
+        usuarios = Cliente.query.filter(Cliente.nome.like(f'%{nome}%')).all()
+    elif telefone:
+        usuarios = Cliente.query.filter(Cliente.telefone.like(f'%{telefone}%')).all()
+
+    return render_template('usuarios/alterar_cliente.html', usuarios=usuarios)
+
+@app.route('/alterar_cliente/<int:id>', methods=['GET'])
+@login_required
+@admin_required
+def alterar_cliente_id(id):
+    usuario = Cliente.query.get(id)
+    return render_template('usuarios/alterar_cliente_id.html', usuario=usuario)
 
 @app.route('/atualizar_usuario/<int:id>', methods=['POST'])
 @login_required
 @admin_required
 def atualizar_usuario(id):
-    usuario = Usuario.query.get(id)
+    usuario = Cliente.query.get(id)
+    
     usuario.nome = request.form['nome']
     usuario.email = request.form['email']
-    usuario.papel = request.form['papel']
+    usuario.telefone = request.form['telefone']
+    usuario.endereco = request.form['endereco']
+    usuario.cidade = request.form['cidade']
+    usuario.estado = request.form['estado']
+    usuario.cep = request.form['cep']
+
     db.session.commit()
     flash(f'Usuário {usuario.nome} atualizado com sucesso!', 'success')
-    return redirect(url_for('alterar_usuario'))
+    return redirect(url_for('alterar_cliente'))
 
 @app.errorhandler(403)
 def forbidden(e):
@@ -146,5 +170,5 @@ def cadastrar_categoria():
 @login_required
 def buscar_produto():
     nome = request.form.get('nome')
-    produto = Produto.query.filter(Produto.nome.like(f'%{nome}%')).first()
-    return render_template('index.html', produto=produto)
+    produtos = Produto.query.filter(Produto.nome.like(f'%{nome}%')).all()
+    return render_template('index.html', produtos=produtos)
