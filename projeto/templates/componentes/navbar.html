@@ -10,28 +10,36 @@
                     <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="#">Produtos</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Cadastros
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('fazer_login') }}">Usuário</a></li>
-                        <li><a class="dropdown-item" href="#">Produto</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('template_cadastrar_cliente')}}">Cliente</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('fazer_login') }}">Funcionário/ Administrador</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('template_cadastrar_produto')}}">Produto</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ url_for('alterar_usuario') }}">Alterar Informações de usuários</a></li>
                         <li><a class="dropdown-item" href="#">Alterar Informações de produtos</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                </li>
             </ul>
-            <form class="d-flex" role="search">
+            <!-- <form class="d-flex me-3" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+            </form> -->
+            <div class="d-flex align-items-center">
+                {% if current_user.is_authenticated %}
+                    <span class="navbar-text me-3">Bem-vindo, {{ current_user.nome }}!</span>
+                    <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('fazer_login') }}" class="btn btn-primary">Login</a>
+                {% endif %}
+            </div>
+
         </div>
     </div>
 </nav>

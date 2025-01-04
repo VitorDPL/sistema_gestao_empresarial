@@ -4,6 +4,28 @@
 
 {% block content %}
 
-    <h1>Bem-vindo ao Sistema de Gestão Empresarial!</h1>
+    <center>
+        <h1>Bem-vindo ao Sistema de Gestão Empresarial!</h1>
+    </center>
+
+    <form method="POST" action="{{ url_for('buscar_produto') }}">
+        <div class="mb-3">
+          <label for="inputNomeProduto" class="form-label">Buscar Produto</label>
+          <input type="text" class="form-control" id="inputNomeProduto" name="nome" aria-describedby="nomeHelp">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+    
+    {% if produto %}
+        <div class="mt-4">
+            <h2>Produto Encontrado:</h2>
+            <p><strong>Nome:</strong> {{ produto.nome }}</p>
+            <p><strong>Preço:</strong> {{ produto.preco }}</p>
+            <p><strong>Quantidade:</strong> {{ produto.quantidade }}</p>
+            <p><strong>Categoria ID:</strong> {{ produto.categoria_id }}</p>
+        </div>
+    {% else %}
+        <p class="mt-4">Nenhum produto encontrado.</p>
+    {% endif %}
 
 {% endblock %}

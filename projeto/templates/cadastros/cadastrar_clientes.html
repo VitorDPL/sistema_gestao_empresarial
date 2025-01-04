@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastrar Cliente{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Cadastrar Cliente</h1>
+        <p class="text-muted">Preencha os campos abaixo para cadastrar um novo cliente.</p>
+    </div>
+    
+    <form class="row g-3" method="POST" action="{{ url_for('cadastrar_cliente') }}">
+        <div class="col-md-6">
+          <label for="inputNome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="inputNome" name="nome" required>
+        </div>
+        <div class="col-md-6">
+          <label for="inputEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="inputEmail" name="email" required>
+        </div>
+        <div class="col-md-6">
+          <label for="inputTelefone" class="form-label">Telefone</label>
+          <input type="text" class="form-control" id="inputTelefone" name="telefone" required>
+        </div>
+        <div class="col-md-2">
+          <label for="inputCep" class="form-label">CEP</label>
+          <input type="text" class="form-control" id="inputCep" name="cep" required>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="button" class="btn btn-primary" onclick="buscarEndereco()">Buscar Endereço</button>
+        </div>
+        <div class="col-12">
+          <label for="inputEndereco" class="form-label">Endereço</label>
+          <input type="text" class="form-control" id="inputEndereco" name="endereco" required>
+        </div>
+        <div class="col-md-6">
+          <label for="inputCidade" class="form-label">Cidade</label>
+          <input type="text" class="form-control" id="inputCidade" name="cidade" required>
+        </div>
+        <div class="col-md-4">
+          <label for="inputEstado" class="form-label">Estado</label>
+          <input type="text" class="form-control" id="inputEstado" name="estado" required>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+      </form>
+</div>
+
+<script>
+function buscarEndereco() {
+    var cep = document.getElementById('inputCep').value;
+    if (cep.length !== 8) {
+        alert('Por favor, insira um CEP válido.');
+        return;
+    }
+
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                alert('CEP não encontrado.');
+                return;
+            }
+            document.getElementById('inputEndereco').value = data.logradouro;
+            document.getElementById('inputCidade').value = data.localidade;
+            document.getElementById('inputEstado').value = data.uf;
+        })
+        .catch(error => {
+            console.error('Erro ao buscar o endereço:', error);
+            alert('Erro ao buscar o endereço.');
+        });
+}
+</script>
+
+{% endblock %}
