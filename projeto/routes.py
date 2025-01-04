@@ -8,7 +8,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or current_user.papel != 'admin':
-            abort(403)  # Forbidden
+            abort(403)  
         return f(*args, **kwargs)
     return decorated_function
 
@@ -89,23 +89,35 @@ def alterar_cliente_id(id):
     usuario = Cliente.query.get(id)
     return render_template('usuarios/alterar_cliente_id.html', usuario=usuario)
 
-@app.route('/atualizar_usuario/<int:id>', methods=['POST'])
+@app.route('/atualizar_usuario/<int:id>', methods=['GET', 'POST'])
 @login_required
-@admin_required
 def atualizar_usuario(id):
-    usuario = Cliente.query.get(id)
-    
-    usuario.nome = request.form['nome']
-    usuario.email = request.form['email']
-    usuario.telefone = request.form['telefone']
-    usuario.endereco = request.form['endereco']
-    usuario.cidade = request.form['cidade']
-    usuario.estado = request.form['estado']
-    usuario.cep = request.form['cep']
-
-    db.session.commit()
-    flash(f'Usuário {usuario.nome} atualizado com sucesso!', 'success')
-    return redirect(url_for('alterar_cliente'))
+    usuario = Cliente.query.get_or_404(id)
+    if request.method == 'POST':
+        usuario.nome = request.form['nome']
+        usuario.email = request.form['email']
+        usuario.telefone = request.form['telefone']
+        endereco = Endereco.query.filter_by(cliente_id=usuario.id).first()
+        if endereco:
+            endereco.endereco = request.form['endereco']
+            endereco.cidade = request.form['cidade']
+            endereco.estado = request.form['estado']
+            endereco.cep = request.form['cep']
+            endereco.complemento = request.form['complemento']
+        else:
+            novo_endereco = Endereco(
+                cliente_id=usuario.id,
+                endereco=request.form['endereco'],
+                cidade=request.form['cidade'],
+                estado=request.form['estado'],
+                cep=request.form['cep'],
+                complemento=request.form['complemento']
+            )
+            db.session.add(novo_endereco)
+        db.session.commit()
+        flash('Usuário atualizado com sucesso!', 'success')
+        return redirect(url_for('alterar_cliente'))
+    return render_template('editar_usuario.html', usuario=usuario)
 
 @app.errorhandler(403)
 def forbidden(e):
@@ -117,21 +129,37 @@ def forbidden(e):
 def template_cadastrar_cliente():
     return render_template('cadastros/cadastrar_clientes.html')
 
-@app.route('/fazer_cadastro_de_clientes', methods=['POST'])
+@app.route('/cadastrar_cliente', methods=['GET', 'POST'])
 @login_required
 def cadastrar_cliente():
-    nome = request.form['nome']
-    email = request.form['email']
-    telefone = request.form['telefone']
-    endereco = request.form['endereco']
-    cidade = request.form['cidade']
-    estado = request.form['estado']
-    cep = request.form['cep']
-    new_cliente = Cliente(nome=nome, email=email, telefone=telefone, endereco=endereco, cidade=cidade, estado=estado, cep=cep)
-    db.session.add(new_cliente)
-    db.session.commit()
-    flash(f'Cliente {new_cliente.nome} cadastrado com sucesso!', 'success')
-    return redirect(url_for('home'))
+    if request.method == 'POST':
+        nome = request.form['nome']
+        email = request.form['email']
+        telefone = request.form['telefone']
+        endereco = request.form['endereco']
+        complemento = request.form['complemento']
+        cidade = request.form['cidade']
+        estado = request.form['estado']
+        cep = request.form['cep']
+        
+        novo_cliente = Cliente(nome=nome, email=email, telefone=telefone)
+        db.session.add(novo_cliente)
+        db.session.commit()
+        
+        novo_endereco = Endereco(cliente_id=novo_cliente.id, endereco=endereco, complemento=complemento, cidade=cidade, estado=estado, cep=cep)
+        db.session.add(novo_endereco)
+        db.session.commit()
+        
+        flash('Cliente cadastrado com sucesso!', 'success')
+        return redirect(url_for('cadastrar_cliente'))
+    return render_template('cadastrar_cliente.html')
+
+@app.route('/buscar_cliente', methods=['POST'])
+@login_required
+def buscar_cliente():
+    nome = request.form.get('nome')
+    clientes = Cliente.query.filter(Cliente.nome.like(f'%{nome}%')).all()
+    return render_template('index.html', clientes=clientes)
 
 # cadastro de produtos
 @app.route('/cadastrar_produto')
@@ -172,3 +200,4 @@ def buscar_produto():
     nome = request.form.get('nome')
     produtos = Produto.query.filter(Produto.nome.like(f'%{nome}%')).all()
     return render_template('index.html', produtos=produtos)
+

@@ -41,10 +41,13 @@
                         <strong>Nome:</strong> {{ user.nome }}<br>
                         <strong>Email:</strong> {{ user.email }}<br>
                         <strong>Telefone:</strong> {{ user.telefone }}<br>
-                        <strong>Endereço:</strong> {{ user.endereco }}<br>
-                        <strong>Cidade:</strong> {{ user.cidade }}<br>
-                        <strong>Estado:</strong> {{ user.estado }}<br>
-                        <strong>CEP:</strong> {{ user.cep }}<br>
+                        {% for endereco in user.enderecos %}
+                        <strong>Endereço:</strong> {{ endereco.endereco }}<br>
+                        <strong>Complemento:</strong> {{ endereco.complemento }}<br>
+                        <strong>Cidade:</strong> {{ endereco.cidade }}<br>
+                        <strong>Estado:</strong> {{ endereco.estado }}<br>
+                        <strong>CEP:</strong> {{ endereco.cep }}<br>
+                        {% endfor %}
                     </div>
                     <a href="{{ url_for('alterar_cliente_id', id=user.id) }}" class="btn btn-success">✏️ Editar</a>
                 </div>
@@ -56,29 +59,8 @@
     <center>
         <h2 class="text-warning">Nenhum Cliente Encontrado!</h2>
     </center>
-    <div class="row">
-        <div class="col">
-            <div class="list-group">
-                {% for user in usuarios %}
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>Nome:</strong> {{ user.nome }}<br>
-                        <strong>Email:</strong> {{ user.email }}<br>
-                        <strong>Telefone:</strong> {{ user.telefone }}<br>
-                        <strong>Endereço:</strong> {{ user.endereco }}<br>
-                        <strong>Cidade:</strong> {{ user.cidade }}<br>
-                        <strong>Estado:</strong> {{ user.estado }}<br>
-                        <strong>CEP:</strong> {{ user.cep }}<br>
-                    </div>
-                    <a href="{{ url_for('alterar_cliente_id', id=user.id) }}" class="btn btn-info">✏️ Editar</a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
     {% endif %}
 </div>
-
 
 <style>
     body {

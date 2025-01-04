@@ -1,37 +1,44 @@
 <!-- Modal Novo Pedido -->
 <div class="modal fade" id="novoPedido" tabindex="-1" aria-labelledby="novoPedidoLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="novoPedidoLabel">Novo Pedido</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Conteúdo do modal -->
-                <p>Formulário para criar um novo pedido.</p>
-
-                <!-- buscar produto com botão de adiciona-lo a uma lista. -->
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Buscar Produto" aria-label="Buscar Produto" aria-describedby="button-addon2">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
-
-                    <!-- Lista de produtos adicionados ao pedido -->
-                    <ul class="list-group
-                    mt-3">
-                        <li class="list-group
-                        item">Produto 1</li>
-                        <li class="list-group
-                        item">Produto 2</li>
-                        <li class="list-group
-                        item">Produto 3</li>
-                    </ul>
-
+                <!-- buscar cliente e associa-lo a um novo pedido -->
+                <form id="buscarClienteForm" method="POST" action="{{ url_for('buscar_cliente') }}" class="mb-4">
+                    <div class="mb-3">
+                        <label for="inputNomeCliente" class="form-label">🔍 Buscar Cliente Por Nome:</label>
+                        <input type="text" class="form-control" id="inputNomeCliente" name="nome" placeholder="Ex: João Silva" aria-describedby="nomeHelp" required>
+                    </div>
+                    <button type="submit" class="btn btn-info w-100 btn-lg">🔍 Buscar Cliente</button>
+                </form>
+                <div id="clienteInfo" class="mt-4" style="display: none;">
+                    <h5>Cliente Encontrado:</h5>
+                    <p id="clienteNome"></p>
                 </div>
-
+                <div id="itensPedido" class="mt-4" style="display: none;">
+                    <h5>Itens do Pedido:</h5>
+                    <form id="buscarProdutoForm" method="POST" action="{{ url_for('buscar_produto') }}" class="mb-4">
+                        <div class="mb-3">
+                            <label for="inputNomeProduto" class="form-label">🔍 Buscar Produto Por Nome:</label>
+                            <input type="text" class="form-control" id="inputNomeProduto" name="nome" placeholder="Ex: Camiseta" aria-describedby="produtoHelp" required>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100 btn-lg">🔍 Buscar Produto</button>
+                    </form>
+                    <div id="listaItens">
+                        <!-- Lista de itens adicionados -->
+                    </div>
+                    <div class="mt-4">
+                        <h5>Total do Pedido: R$<span id="totalPedido">0.00</span></h5>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Salvar Pedido</button>
+                <button type="button" class="btn btn-primary" id="salvarPedido">Salvar Pedido</button>
             </div>
         </div>
     </div>

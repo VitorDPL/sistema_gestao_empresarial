@@ -27,6 +27,10 @@
             <input type="text" class="form-control" id="inputEndereco" name="endereco" value="{{ usuario.endereco }}" placeholder="Ex: Rua das Flores, 123">
         </div>
         <div class="mb-3">
+            <label for="inputComplemento" class="form-label">🏠 Complemento</label>
+            <input type="text" class="form-control" id="inputComplemento" name="complemento" value="{{ usuario.complemento }}" placeholder="Ex: apt 303">
+        </div>
+        <div class="mb-3">
             <label for="inputCidade" class="form-label">🌆 Cidade</label>
             <input type="text" class="form-control" id="inputCidade" name="cidade" value="{{ usuario.cidade }}" placeholder="Ex: São Paulo">
         </div>
@@ -45,7 +49,7 @@
     </form>
 
     <div class="text-center mt-4">
-        <a href="url_for('atualizar_usuario')" class="btn btn-outline-secondary">🔙 Voltar para a Lista de Usuários</a>
+        <a href="{{ url_for('buscar_usuario') }}" class="btn btn-outline-secondary">🔙 Voltar para a Lista de Usuários</a>
     </div>
 </div>
 
