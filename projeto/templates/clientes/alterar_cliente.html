@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Alterar Cliente{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h2 class="text-primary">Alterar Cliente</h2>
+        <p class="text-muted">Busque por nome ou telefone para alterar os dados do cliente.</p>
+    </div>
+
+    <!-- Formulário Buscar Cliente por Nome -->
+    <form method="POST" action="{{ url_for('alterar_cliente') }}" class="mb-4 p-4 border rounded bg-white shadow">
+        <label for="inputNomeCliente" class="form-label">Buscar Cliente Por Nome:</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="inputNomeCliente" name="nome" placeholder="Ex: João Silva" required>
+            <button type="submit" class="btn btn-info">Buscar</button>
+        </div>
+    </form>
+
+    <!-- Formulário Buscar Cliente por Telefone -->
+    <form method="POST" action="{{ url_for('alterar_cliente') }}" class="mb-5 p-4 border rounded bg-white shadow">
+        <label for="inputTelefone" class="form-label">Buscar Cliente Por Telefone:</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="inputTelefone" name="telefone" placeholder="Ex: (11) 91234-5678" required>
+            <button type="submit" class="btn btn-info">Buscar</button>
+        </div>
+    </form>
+
+    <!-- Resultados da Busca -->
+    {% if clientes %}
+    <div class="mb-3">
+        <h5 class="text-success">Resultados da Busca:</h5>
+        <ul class="list-group">
+            {% for cliente in clientes %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1"><strong>Nome:</strong> {{ cliente.nome }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ cliente.email }}</p>
+                    <p class="mb-1"><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+                    {% for endereco in cliente.enderecos %}
+                    <p class="mb-1"><strong>Endereço:</strong> {{ endereco.endereco }}</p>
+                    <p class="mb-1"><strong>Cidade:</strong> {{ endereco.cidade }}</p>
+                    <p class="mb-1"><strong>CEP:</strong> {{ endereco.cep }}</p>
+                    {% endfor %}
+                </div>
+                <a href="{{ url_for('alterar_cliente_id', id=cliente.id) }}" class="btn btn-sm btn-success">Editar</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="text-center">
+        <p class="text-warning">Nenhum Cliente Encontrado!</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    body {
+        background-color: #f7f8fa;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 750px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .input-group .form-control {
+        border-radius: 0.375rem 0 0 0.375rem;
+    }
+
+    .input-group .btn {
+        border-radius: 0 0.375rem 0.375rem 0;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+    }
+
+    .list-group-item {
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+    }
+
+    .shadow {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .text-muted {
+        font-size: 0.9rem;
+    }
+
+    .text-success {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .text-warning {
+        font-size: 1rem;
+        color: #ffc107;
+    }
+</style>
+{% endblock %}

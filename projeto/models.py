@@ -20,6 +20,8 @@ class Endereco(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
     endereco = db.Column(db.String(200), nullable=False)
+    numero = db.Column(db.String(20), nullable=False)
+    bairro = db.Column(db.String(20), nullable=False)
     complemento = db.Column(db.String(200), nullable=True)
     cidade = db.Column(db.String(100), nullable=False)
     estado = db.Column(db.String(50), nullable=False)
@@ -36,7 +38,7 @@ class Produto(db.Model):
     preco = db.Column(db.Float, nullable=False)
     quantidade = db.Column(db.Integer, default=0)
     ativo = db.Column(db.Boolean, default=True)
-    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), default="Sem categoria")
+    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), nullable=True)
 
 class ItemEstoque(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -50,16 +52,15 @@ class Venda(db.Model):
     pedido_id = db.Column(db.Integer, db.ForeignKey('pedido.id'))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     desconto = db.Column(db.Float, nullable=False)
-    data_venda = db.Column(db.DateTime, default=datetime)
+    data_venda = db.Column(db.DateTime, default=datetime.utcnow)
     quantidade = db.Column(db.Integer, nullable=False)
     valor_frete = db.Column(db.Float, nullable=False)
-
     total = db.Column(db.Float, nullable=False)
 
 class Pedido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
-    data_criacao = db.Column(db.DateTime, default=datetime)
+    data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     total = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(50), default='Pendente')
 
@@ -71,16 +72,8 @@ class ItensPedido(db.Model):
     total = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
-        return f"ItemPedido('{self.produto_id}', '{self.pedido_id}', '{self.quantidade}', '{self.valor_unitario}', '{self.total}')"
+        return f"ItensPedido('{self.produto_id}', '{self.pedido_id}', '{self.quantidade}', '{self.total}')"
     
     def valor_total(self):
-        return self.quantidade * self.produto_id.preco
-
-
-
-# class Lancamento(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     descricao = db.Column(db.String(200), nullable=False)
-#     valor = db.Column(db.Float, nullable=False)
-#     tipo = db.Column(db.String(50))  # Entrada ou Saída
-#     data = db.Column(db.DateTime, default=datetime)
+        produto = Produto.query.get(self.produto_id)
+        return self.quantidade * produto.preco

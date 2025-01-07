@@ -1,45 +1,169 @@
 <!-- Modal Novo Pedido -->
 <div class="modal fade" id="novoPedido" tabindex="-1" aria-labelledby="novoPedidoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="novoPedidoLabel">Novo Pedido</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="novoPedidoLabel">🛒 Novo Pedido</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <!-- buscar cliente e associa-lo a um novo pedido -->
-                <form id="buscarClienteForm" method="POST" action="{{ url_for('buscar_cliente') }}" class="mb-4">
-                    <div class="mb-3">
-                        <label for="inputNomeCliente" class="form-label">🔍 Buscar Cliente Por Nome:</label>
-                        <input type="text" class="form-control" id="inputNomeCliente" name="nome" placeholder="Ex: João Silva" aria-describedby="nomeHelp" required>
+            <div class="modal-body p-4">
+                <!-- Buscar Cliente -->
+                <form id="buscarClienteForm" class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-primary">👤</span>
+                        <input type="text" class="form-control" id="inputNomeCliente" name="nome" placeholder="Digite o nome do cliente..." required>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
                     </div>
-                    <button type="submit" class="btn btn-info w-100 btn-lg">🔍 Buscar Cliente</button>
                 </form>
-                <div id="clienteInfo" class="mt-4" style="display: none;">
-                    <h5>Cliente Encontrado:</h5>
-                    <p id="clienteNome"></p>
+                <div id="clienteInfo" class="alert alert-light border mt-3 d-none">
+                    <strong>Cliente:</strong> <span id="clienteNome" class="text-primary"></span>
                 </div>
-                <div id="itensPedido" class="mt-4" style="display: none;">
-                    <h5>Itens do Pedido:</h5>
-                    <form id="buscarProdutoForm" method="POST" action="{{ url_for('buscar_produto') }}" class="mb-4">
-                        <div class="mb-3">
-                            <label for="inputNomeProduto" class="form-label">🔍 Buscar Produto Por Nome:</label>
-                            <input type="text" class="form-control" id="inputNomeProduto" name="nome" placeholder="Ex: Camiseta" aria-describedby="produtoHelp" required>
+
+                <!-- Itens do Pedido -->
+                <div id="itensPedido" class="mt-4 d-none">
+                    <h5 class="fw-bold text-secondary mb-3">Itens do Pedido</h5>
+                    <form id="buscarProdutoForm" class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-success">📦</span>
+                            <input type="text" class="form-control" id="inputNomeProduto" name="nome" placeholder="Digite o nome do produto..." required>
+                            <button type="submit" class="btn btn-success">Adicionar</button>
                         </div>
-                        <button type="submit" class="btn btn-info w-100 btn-lg">🔍 Buscar Produto</button>
                     </form>
-                    <div id="listaItens">
-                        <!-- Lista de itens adicionados -->
-                    </div>
-                    <div class="mt-4">
-                        <h5>Total do Pedido: R$<span id="totalPedido">0.00</span></h5>
+                    <ul id="listaItens" class="list-group mb-4">
+                        <!-- Itens serão adicionados aqui -->
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold text-secondary">Total do Pedido:</h6>
+                        <h4 class="fw-bold text-primary">R$ <span id="totalPedido">0.00</span></h4>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-primary" id="salvarPedido">Salvar Pedido</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- JavaScript -->
+<script>
+document.getElementById('buscarClienteForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    fetch('{{ url_for("buscar_cliente") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.cliente) {
+            document.getElementById('clienteNome').textContent = data.cliente.nome;
+            document.getElementById('clienteInfo').classList.remove('d-none');
+            document.getElementById('itensPedido').classList.remove('d-none');
+        } else {
+            alert('Cliente não encontrado.');
+        }
+    });
+});
+
+document.getElementById('buscarProdutoForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    fetch('{{ url_for("buscar_produto") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.produtos && data.produtos.length > 0) {
+            data.produtos.forEach(produto => adicionarItem(produto));
+        } else {
+            alert('Produto não encontrado.');
+        }
+    });
+});
+
+function adicionarItem(produto) {
+    const listaItens = document.getElementById('listaItens');
+    const item = document.createElement('li');
+    item.className = 'list-group-item d-flex justify-content-between align-items-center';
+    item.dataset.produtoId = produto.id;
+    item.dataset.preco = produto.preco;
+    item.innerHTML = `
+        <span>${produto.nome} - R$${produto.preco.toFixed(2)}</span>
+        <div class="d-flex align-items-center">
+            <input type="number" value="1" min="1" class="form-control form-control-sm me-2 quantidade" style="width: 80px;">
+            <button class="btn btn-sm btn-outline-danger remover-item">✖</button>
+        </div>
+    `;
+    listaItens.appendChild(item);
+
+    // Evento para remover item
+    item.querySelector('.remover-item').addEventListener('click', function() {
+        listaItens.removeChild(item);
+        atualizarTotal();
+    });
+
+    // Evento para atualizar total
+    item.querySelector('.quantidade').addEventListener('change', function() {
+        atualizarTotal();
+    });
+
+    atualizarTotal();
+}
+
+function atualizarTotal() {
+    const itens = document.querySelectorAll('#listaItens .list-group-item');
+    let total = 0;
+    itens.forEach(item => {
+        const preco = parseFloat(item.dataset.preco);
+        const quantidade = parseInt(item.querySelector('.quantidade').value);
+        total += preco * quantidade;
+    });
+    document.getElementById('totalPedido').textContent = total.toFixed(2);
+}
+
+document.getElementById('salvarPedido').addEventListener('click', function() {
+    const clienteNome = document.getElementById('clienteNome').textContent;
+    const itens = [];
+    document.querySelectorAll('#listaItens .list-group-item').forEach(item => {
+        const produtoId = item.dataset.produtoId;
+        const quantidade = parseInt(item.querySelector('.quantidade').value);
+        itens.push({ produto_id: produtoId, quantidade: quantidade });
+    });
+
+    const pedido = {
+        cliente_nome: clienteNome,
+        itens: itens,
+        total: parseFloat(document.getElementById('totalPedido').textContent)
+    };
+
+    fetch('{{ url_for("salvar_pedido") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pedido)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Pedido salvo com sucesso!');
+            $('#novoPedido').modal('hide');
+            resetForm();
+        } else {
+            alert('Erro ao salvar o pedido.');
+        }
+    });
+});
+
+function resetForm() {
+    document.getElementById('buscarClienteForm').reset();
+    document.getElementById('buscarProdutoForm').reset();
+    document.getElementById('clienteInfo').classList.add('d-none');
+    document.getElementById('itensPedido').classList.add('d-none');
+    document.getElementById('listaItens').innerHTML = '';
+    document.getElementById('totalPedido').textContent = '0.00';
+}
+</script>

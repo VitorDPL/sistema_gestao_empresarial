@@ -17,10 +17,11 @@
                         Cadastros
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('template_cadastrar_cliente')}}">Cliente</a></li>
+                        <!-- Navbar -->
+                        <li><a class="dropdown-item" href="{{ url_for('cadastrar_cliente') }}">Cliente</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('fazer_login') }}">Funcionário/ Administrador</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('template_cadastrar_produto')}}">Produto</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('cadastrar_produto')}}">Produto</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ url_for('alterar_cliente') }}">Alterar Informações de Clientes</a></li>
                         <li><a class="dropdown-item" href="#">Alterar Informações de produtos</a></li>
